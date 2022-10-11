@@ -1,0 +1,17 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: test
+  annotations:
+    config.kubernetes.io/local-config: "true"
+info:
+  description: test package
+pipeline:
+  mutators:
+  - image: gcr.io/kpt-fn/search-replace:v0.2.0
+    configMap:
+      by-path: spec.template.spec.containers[*].image
+      by-value-regex: yndd/(.*)
+      put-value: yndd/${1}
+  - image: gcr.io/kpt-fn/set-namespace:v0.4.1
+    configPath: package-context.yaml
